@@ -1,0 +1,9 @@
+{
+  "name": "M.R CARROM",
+  "short_name": "MR CARROM",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101a18",
+  "theme_color": "#101a18",
+  "icons": []
+}
