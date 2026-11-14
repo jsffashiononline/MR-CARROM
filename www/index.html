@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101a18"><title>M.R CARROM</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header><div class="brand"><span class="mark">MR</span><div><b>M.R CARROM</b><small>CLASSIC BOARD • PREMIUM PLAY</small></div></div><button id="soundBtn" class="iconbtn" aria-label="Toggle sound">♫</button></header>
+<main>
+<section id="home" class="panel">
+  <div class="hero"><div class="eyebrow">THE CLASSIC GAME, REIMAGINED</div><h1>Play your<br><em>next great</em> match.</h1><p>Challenge the computer or play together on one device.</p></div>
+  <div class="modegrid">
+    <button class="mode" data-mode="ai"><span>🤖</span><b>VS COMPUTER</b><small>Single player</small></button>
+    <button class="mode" data-mode="local"><span>👥</span><b>2 PLAYERS</b><small>Same device</small></button>
+    <button class="mode" data-mode="online"><span>🌐</span><b>ONLINE</b><small>Coming soon</small></button>
+  </div>
+  <div class="homefoot"><span>● OFFLINE PLAY AVAILABLE</span><span>VERSION 1.0</span></div>
+</section>
+<section id="game" class="hidden">
+  <div class="gamebar"><button id="backBtn" class="smallbtn">← MENU</button><div class="matchname">CLASSIC MATCH</div><button id="restartBtn" class="smallbtn">↻ NEW</button></div>
+  <div class="scorebar">
+    <div class="player active" id="p1"><span class="dot cream"></span><div><b id="p1name">YOU</b><small id="p1score">0 POINTS</small></div></div>
+    <div class="turn" id="turnLabel">YOUR TURN</div>
+    <div class="player right" id="p2"><span class="dot red"></span><div><b id="p2name">CPU</b><small id="p2score">0 POINTS</small></div></div>
+  </div>
+  <div class="boardwrap"><canvas id="board" width="800" height="800"></canvas><div id="aimhint">DRAG BACK TO AIM • RELEASE TO SHOOT</div></div>
+  <div class="controls"><div><b id="status">Your turn — line up the striker</b><small>Pot your pieces. Queen is worth 3 points.</small></div><button id="queenBtn" class="queen">QUEEN <b>3</b></button></div>
+  <div class="powerrow"><span>POWER</span><div class="powertrack"><div id="powerFill"></div></div><span id="powerVal">0%</span></div>
+</section>
+<section id="result" class="panel hidden"><div class="resulticon">🏆</div><div class="eyebrow">MATCH COMPLETE</div><h2 id="resultTitle">YOU WIN!</h2><p id="resultText">Great match.</p><button id="againBtn" class="primary">PLAY AGAIN</button><button id="menuResult" class="secondary">MAIN MENU</button></section>
+</main>
+<footer>© 2026 M.R CARROM <span>PLAY FAIR • HAVE FUN</span></footer>
+</div>
+<script src="app.js"></script>
+</body></html>
