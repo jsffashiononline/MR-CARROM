@@ -18,7 +18,7 @@ function deliveredOrders(){return Object.entries(onlineOrders).filter(([,o])=>St
 function summary(){
  const manualSales=records.reduce((s,r)=>s+number(r.sale),0),manualCost=records.reduce((s,r)=>s+number(r.cost),0);
  const delivered=deliveredOrders();const webSales=delivered.reduce((s,[,o])=>s+orderSale(o),0),webCost=delivered.reduce((s,[,o])=>s+orderCost(o),0);
- const completeProfit=delivered.filter(([,o])=>itemList(o).every(i=>Object.prototype.hasOwnProperty.call(productCosts,String(i.id||i.name||i.productName||"")))).reduce((s,[,o])=>s+orderSale(o)-orderCost(o),0);
+ const completeProfit=delivered.filter(([,o])=>itemList(o).every(i=>i.purchaseCost!=null&&i.purchaseCost!=="")).reduce((s,[,o])=>s+orderSale(o)-orderCost(o),0);
  $("totalSales").textContent=money(manualSales+webSales);$("totalCost").textContent=money(manualCost+webCost);$("totalProfit").textContent=money(manualSales-manualCost+completeProfit);
  $("recordCount").textContent=(records.length+Object.keys(onlineOrders).length).toLocaleString("bn-BD")+" টি";
 }
