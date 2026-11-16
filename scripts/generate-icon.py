@@ -27,7 +27,9 @@ for name,size in [("mdpi",48),("hdpi",72),("xhdpi",96),("xxhdpi",144),("xxxhdpi"
     folder=root/f"mipmap-{name}"; folder.mkdir(parents=True,exist_ok=True)
     im.resize((size*4,size*4),Image.Resampling.LANCZOS).resize((size,size),Image.Resampling.LANCZOS).save(folder/"ic_launcher.png")
 # Adaptive icon foreground is transparent, padded artwork
-fg=im.resize((432,432),Image.Resampling.LANCZOS)
+fg=Image.new("RGBA",(432,432),(0,0,0,0))
+art=im.resize((302,302),Image.Resampling.LANCZOS)
+fg.alpha_composite(art,(65,65))
 folder=root/"drawable-nodpi"; folder.mkdir(parents=True,exist_ok=True)
 fg.save(folder/"ic_launcher_foreground.png")
 folder=root/"mipmap-anydpi-v26"; folder.mkdir(parents=True,exist_ok=True)
