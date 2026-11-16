@@ -1,37 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#101a18"><title>M.R CARROM</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a18"><meta name="description" content="M.R Sales Manager - sales, purchase cost and profit tracker">
+<title>M.R SALES MANAGER</title>
 <link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app">
-<header><div class="brand"><span class="mark">MR</span><div><b>M.R CARROM</b><small>CLASSIC BOARD • PREMIUM PLAY</small></div></div><button id="soundBtn" class="iconbtn" aria-label="Toggle sound">♫</button></header>
+<div class="app-shell">
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">MR</span><span><b>M.R SALES</b><small>SALES & PROFIT MANAGER</small></span></a>
+  <button id="exportBtn" class="outline-btn" type="button">↓ <span>এক্সপোর্ট</span></button>
+</header>
 <main>
-<section id="home" class="panel">
-  <div class="hero"><div class="eyebrow">THE CLASSIC GAME, REIMAGINED</div><h1>Play your<br><em>next great</em> match.</h1><p>Challenge the computer or play together on one device.</p></div>
-  <div class="modegrid">
-    <button class="mode" data-mode="ai"><span>🤖</span><b>VS COMPUTER</b><small>Single player</small></button>
-    <button class="mode" data-mode="local"><span>👥</span><b>2 PLAYERS</b><small>Same device</small></button>
-    <button class="mode" data-mode="online"><span>🌐</span><b>ONLINE</b><small>Coming soon</small></button>
-  </div>
-  <div class="homefoot"><span>● OFFLINE PLAY AVAILABLE</span><span>VERSION 1.0</span></div>
-</section>
-<section id="game" class="hidden">
-  <div class="gamebar"><button id="backBtn" class="smallbtn">← MENU</button><div class="matchname">CLASSIC MATCH</div><button id="restartBtn" class="smallbtn">↻ NEW</button></div>
-  <div class="scorebar">
-    <div class="player active" id="p1"><span class="dot cream"></span><div><b id="p1name">YOU</b><small id="p1score">0 POINTS</small></div></div>
-    <div class="turn" id="turnLabel">YOUR TURN</div>
-    <div class="player right" id="p2"><span class="dot red"></span><div><b id="p2name">CPU</b><small id="p2score">0 POINTS</small></div></div>
-  </div>
-  <div class="boardwrap"><canvas id="board" width="800" height="800"></canvas><div id="aimhint">DRAG BACK TO AIM • RELEASE TO SHOOT</div></div>
-  <div class="controls"><div><b id="status">Your turn — line up the striker</b><small>Pot your pieces. Queen is worth 3 points.</small></div><button id="queenBtn" class="queen">QUEEN <b>3</b></button></div>
-  <div class="powerrow"><span>POWER</span><div class="powertrack"><div id="powerFill"></div></div><span id="powerVal">0%</span></div>
-</section>
-<section id="result" class="panel hidden"><div class="resulticon">🏆</div><div class="eyebrow">MATCH COMPLETE</div><h2 id="resultTitle">YOU WIN!</h2><p id="resultText">Great match.</p><button id="againBtn" class="primary">PLAY AGAIN</button><button id="menuResult" class="secondary">MAIN MENU</button></section>
+  <section class="welcome"><div><p class="eyebrow">BUSINESS OVERVIEW</p><h1>বিক্রির হিসাব,<br><em>এক জায়গায়।</em></h1><p class="sub">প্রতিদিনের বিক্রি, কেনার খরচ ও লাভ সহজে হিসাব রাখুন।</p></div><div class="welcome-icon">৳</div></section>
+  <section class="stats" aria-label="হিসাবের সারাংশ">
+    <article class="stat-card"><span class="stat-label">মোট বিক্রি</span><strong id="totalSales">৳০</strong><small>সর্বমোট বিক্রয়</small></article>
+    <article class="stat-card"><span class="stat-label">মোট কেনা</span><strong id="totalCost">৳০</strong><small>প্রোডাক্ট খরচ</small></article>
+    <article class="stat-card profit-card"><span class="stat-label">মোট লাভ</span><strong id="totalProfit">৳০</strong><small>বিক্রি − কেনা</small></article>
+  </section>
+  <section class="panel form-panel" id="entryPanel">
+    <div class="section-heading"><div><p class="eyebrow">NEW TRANSACTION</p><h2 id="formTitle">নতুন বিক্রির তথ্য</h2></div><span class="form-badge">ENTRY FORM</span></div>
+    <form id="salesForm">
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <label>কাস্টমারের নাম<input id="customerName" type="text" placeholder="যেমন: রহিম" required maxlength="80"></label>
+        <label>মোবাইল নম্বর<input id="customerPhone" type="tel" inputmode="tel" placeholder="01XXXXXXXXX" maxlength="20" required></label>
+        <label>বিক্রির টাকা (৳)<input id="saleAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></label>
+        <label>প্রোডাক্ট কেনার খরচ (৳)<input id="costAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></label>
+        <label>বিক্রির তারিখ<input id="saleDate" type="date" required></label>
+        <label>অতিরিক্ত নোট <span class="optional">(ঐচ্ছিক)</span><input id="note" type="text" maxlength="160" placeholder="প্রোডাক্ট / অর্ডার সম্পর্কে"></label>
+      </div>
+      <div class="profit-preview"><span><span class="preview-dot"></span> আনুমানিক লাভ</span><strong id="profitPreview">৳০</strong></div>
+      <div class="form-actions"><button class="primary-btn" id="saveBtn" type="submit">＋ তথ্য সেভ করুন</button><button class="text-btn hidden" id="cancelEdit" type="button">বাতিল</button></div>
+      <p class="privacy-note">আপনার হিসাব এই ডিভাইসের ব্রাউজারেই সেভ থাকবে।</p>
+    </form>
+  </section>
+  <section class="panel records-panel">
+    <div class="section-heading records-heading"><div><p class="eyebrow">TRANSACTION HISTORY</p><h2>বিক্রির তালিকা</h2></div><span id="recordCount" class="count-badge">০ টি</span></div>
+    <div class="filters"><input id="searchInput" type="search" placeholder="নাম বা নম্বর দিয়ে খুঁজুন..." aria-label="Search records"><input id="filterDate" type="month" aria-label="মাস অনুযায়ী ফিল্টার"><button id="clearFilter" class="clear-btn" type="button">রিসেট</button></div>
+    <div class="table-wrap"><table><thead><tr><th>কাস্টমার</th><th>তারিখ</th><th>বিক্রি</th><th>কেনা</th><th>লাভ</th><th>অ্যাকশন</th></tr></thead><tbody id="recordsBody"><tr><td colspan="6" class="empty">এখনো কোনো বিক্রির তথ্য যোগ করা হয়নি।</td></tr></tbody></table></div>
+    <div id="mobileRecords" class="mobile-records"></div>
+    <div class="list-footer"><span id="visibleCount">০ টি রেকর্ড দেখানো হচ্ছে</span><button id="clearAll" class="danger-text" type="button">সব হিসাব মুছুন</button></div>
+  </section>
 </main>
-<footer>© 2026 M.R CARROM <span>PLAY FAIR • HAVE FUN</span></footer>
+<footer><span>© 2026 M.R SALES MANAGER</span><span>MADE FOR SIMPLE BOOKKEEPING</span></footer>
 </div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 </body></html>
