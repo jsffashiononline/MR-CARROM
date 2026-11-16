@@ -1,6 +1,6 @@
 {
-  "appId": "com.mrjabed.carrom",
-  "appName": "M.R CARROM",
+  "appId": "com.mrjabed.salesmanager",
+  "appName": "M.R Sales Manager",
   "webDir": "www",
   "bundledWebRuntime": false
 }
