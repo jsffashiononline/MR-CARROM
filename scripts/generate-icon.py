@@ -40,14 +40,14 @@ art = im.resize((302, 302), Image.Resampling.LANCZOS)
 fg.alpha_composite(art, (65, 65))
 folder = root / "drawable-nodpi"
 folder.mkdir(parents=True, exist_ok=True)
-fg.save(folder / "ic_launcher_foreground.png")
+fg.save(folder / "jsf_launcher_foreground.png")
 
 folder = root / "mipmap-anydpi-v26"
 folder.mkdir(parents=True, exist_ok=True)
 (folder / "ic_launcher.xml").write_text('''<?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background"/>
-    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+    <foreground android:drawable="@drawable/jsf_launcher_foreground"/>
 </adaptive-icon>
 ''')
 folder = root / "values"
