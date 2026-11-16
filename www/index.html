@@ -12,7 +12,7 @@
   <a class="brand" href="#"><span class="brand-mark">MR</span><span><b>M.R SALES</b><small>SALES & PROFIT MANAGER</small></span></a>
   <button id="exportBtn" class="outline-btn" type="button">↓ <span>এক্সপোর্ট</span></button>
 </header>
-<main>
+<section class="panel" id="loginPanel"><div class="section-heading"><div><p class="eyebrow">JSF FASHION SYNC</p><h2>ওয়েবসাইট অ্যাডমিন লগইন</h2></div></div><p id="syncStatus">ওয়েবসাইটের অর্ডার দেখতে অ্যাডমিন লগইন করুন</p><form id="loginForm" class="form-grid"><label>অ্যাডমিন ইমেইল<input id="loginEmail" type="email" autocomplete="username" required></label><label>পাসওয়ার্ড<input id="loginPassword" type="password" autocomplete="current-password" required></label><button class="primary-btn" type="submit">লগইন ও অর্ডার সিঙ্ক</button><p id="loginMessage" aria-live="polite"></p></form></section><p id="syncStatus" class="sync-status">অফলাইন ম্যানুয়াল হিসাব</p><button id="logoutBtn" class="outline-btn" type="button" hidden>লগআউট</button><main>
   <section class="welcome"><div><p class="eyebrow">BUSINESS OVERVIEW</p><h1>বিক্রির হিসাব,<br><em>এক জায়গায়।</em></h1><p class="sub">প্রতিদিনের বিক্রি, কেনার খরচ ও লাভ সহজে হিসাব রাখুন।</p></div><div class="welcome-icon">৳</div></section>
   <section class="stats" aria-label="হিসাবের সারাংশ">
     <article class="stat-card"><span class="stat-label">মোট বিক্রি</span><strong id="totalSales">৳০</strong><small>সর্বমোট বিক্রয়</small></article>
@@ -26,6 +26,8 @@
       <div class="form-grid">
         <label>কাস্টমারের নাম<input id="customerName" type="text" placeholder="যেমন: রহিম" required maxlength="80"></label>
         <label>মোবাইল নম্বর<input id="customerPhone" type="tel" inputmode="tel" placeholder="01XXXXXXXXX" maxlength="20" required></label>
+        <label>প্রোডাক্টের নাম<input id="productName" type="text" placeholder="যেমন: Premium T-Shirt" maxlength="120"></label>
+        <label>কাস্টমারের ঠিকানা<input id="customerAddress" type="text" placeholder="সম্পূর্ণ ঠিকানা" maxlength="500"></label>
         <label>বিক্রির টাকা (৳)<input id="saleAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></label>
         <label>প্রোডাক্ট কেনার খরচ (৳)<input id="costAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></label>
         <label>বিক্রির তারিখ<input id="saleDate" type="date" required></label>
@@ -36,6 +38,7 @@
       <p class="privacy-note">আপনার হিসাব এই ডিভাইসের ব্রাউজারেই সেভ থাকবে।</p>
     </form>
   </section>
+  <section class="panel records-panel"><div class="section-heading"><div><p class="eyebrow">LIVE WEBSITE ORDERS</p><h2>JSF ওয়েবসাইটের অর্ডার</h2></div><span class="count-badge">অটো সিঙ্ক</span></div><div id="onlineOrders"><p class="empty">অ্যাডমিন লগইন করলে অর্ডার দেখা যাবে।</p></div></section>
   <section class="panel records-panel">
     <div class="section-heading records-heading"><div><p class="eyebrow">TRANSACTION HISTORY</p><h2>বিক্রির তালিকা</h2></div><span id="recordCount" class="count-badge">০ টি</span></div>
     <div class="filters"><input id="searchInput" type="search" placeholder="নাম বা নম্বর দিয়ে খুঁজুন..." aria-label="Search records"><input id="filterDate" type="month" aria-label="মাস অনুযায়ী ফিল্টার"><button id="clearFilter" class="clear-btn" type="button">রিসেট</button></div>
@@ -47,5 +50,8 @@
 <footer><span>© 2026 M.R SALES MANAGER</span><span>MADE FOR SIMPLE BOOKKEEPING</span></footer>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="app.js?v=2"></script>
 </body></html>
