@@ -1,7 +1,7 @@
 {
-  "name": "M.R Sales Manager",
-  "short_name": "MR Sales",
-  "description": "Sales, product cost and profit tracker",
+  "name": "JSF Sales Management",
+  "short_name": "JSF Sales",
+  "description": "JSF Sales Management - sales, product cost and profit tracker",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0c1512",
