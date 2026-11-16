@@ -1,6 +1,6 @@
 {
   "appId": "com.mrjabed.salesmanager",
-  "appName": "M.R Sales Manager",
+  "appName": "JSF Sales Management",
   "webDir": "www",
   "bundledWebRuntime": false
 }
