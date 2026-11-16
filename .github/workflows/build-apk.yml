@@ -40,23 +40,36 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
-      - name: Generate JSF launcher icons
+      - name: Sync web app first
+        run: npx cap sync android
+
+      - name: Generate JSF launcher icons after sync
         run: |
           python -m pip install --quiet Pillow
           python scripts/generate-icon.py
 
-      - name: Configure Android Home Screen launcher
+      - name: Force Android launcher icon and activity
         run: python scripts/fix-android-launcher.py
 
-      - name: Sync web app
-        run: npx cap sync android
+      - name: Verify launcher icon resources
+        shell: bash
+        run: |
+          test -s android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          test -s android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          test -s android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          test -s android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          test -s android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          test -s android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          grep -q 'android:icon="@mipmap/ic_launcher"' android/app/src/main/AndroidManifest.xml
+          grep -q 'android.intent.category.LAUNCHER' android/app/src/main/AndroidManifest.xml
+          echo "Verified: launcher icon files and launcher activity are present."
 
       - name: Build debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: ./gradlew clean assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MR-Sales-Manager-debug-apk
+          name: JSF-Sales-Management-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
