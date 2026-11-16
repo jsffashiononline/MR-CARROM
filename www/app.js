@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id);
 const STORAGE_KEY="mr-sales-manager-records-v1";
 const ADMIN_UIDS=["oqLhQp7pgVUBWFAwLFfjgIg3v2r1","iGYHyUYQKEbICfzY7VDt9HMWcEi1"];
-let records=loadRecords(),onlineOrders={},productCosts={},toastTimer,ordersRef=null,costsRef=null;
+let records=loadRecords(),onlineOrders={},toastTimer,ordersRef=null;
 function loadRecords(){try{const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(v)?v:[]}catch{return[]}}
 function saveRecords(){localStorage.setItem(STORAGE_KEY,JSON.stringify(records))}
 function money(value){return "৳"+Number(value||0).toLocaleString("bn-BD",{maximumFractionDigits:2})}
@@ -13,7 +13,7 @@ function showToast(message){const el=$("toast");el.textContent=message;el.classL
 function safe(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function itemList(order){return Array.isArray(order.items)?order.items:[]}
 function orderSale(order){return number(order.subtotal||itemList(order).reduce((s,i)=>s+number(i.price??i.productPrice??i.unitPrice)*number(i.qty||i.quantity||1),0))}
-function orderCost(order){return itemList(order).reduce((sum,item)=>{const key=String(item.id||item.name||item.productName||"");return sum+number(productCosts[key])*number(item.qty||item.quantity||1)},0)}
+function orderCost(order){return itemList(order).reduce((sum,item)=>sum+number(item.purchaseCost)*number(item.qty||item.quantity||1),0)}
 function deliveredOrders(){return Object.entries(onlineOrders).filter(([,o])=>String(o.status||"Pending").toLowerCase()==="delivered")}
 function summary(){
  const manualSales=records.reduce((s,r)=>s+number(r.sale),0),manualCost=records.reduce((s,r)=>s+number(r.cost),0);
@@ -38,8 +38,8 @@ function renderOnlineOrders(){
  if(!window.firebase?.apps?.length){host.innerHTML='<p class="empty">অনলাইন অর্ডার সংযোগ প্রস্তুত নয়।</p>';return}
  if(!entries.length){host.innerHTML='<p class="empty">ওয়েবসাইটে এখনো কোনো অর্ডার পাওয়া যায়নি।</p>';return}
  host.innerHTML=entries.map(([id,o])=>{
- const items=itemList(o),sale=orderSale(o),cost=orderCost(o),missing=items.some(i=>!Object.prototype.hasOwnProperty.call(productCosts,String(i.id||i.name||i.productName||"")));
- const itemHtml=items.map(i=>{const key=String(i.id||i.name||i.productName||"");return '<div class="online-item"><span>'+safe(i.name||i.productName||"পণ্য")+' × '+number(i.qty||i.quantity||1)+'</span><label>প্রতি পিস কেনা ৳ <input type="number" min="0" step="0.01" value="'+(Object.prototype.hasOwnProperty.call(productCosts,key)?number(productCosts[key]):"")+'" data-cost-key="'+safe(key)+'" placeholder="খরচ লিখুন"></label></div>'}).join("");
+ const items=itemList(o),sale=orderSale(o),cost=orderCost(o),missing=items.some(i=>i.purchaseCost==null||i.purchaseCost==="");
+ const itemHtml=items.map((i,index)=>'<div class="online-item"><span>'+safe(i.name||i.productName||"পণ্য")+' × '+number(i.qty||i.quantity||1)+'</span><label>প্রতি পিস কেনা ৳ <input type="number" min="0" step="0.01" value="'+(i.purchaseCost==null?"":number(i.purchaseCost))+'" data-order-cost data-order-id="'+safe(id)+'" data-item-index="'+index+'" placeholder="খরচ লিখুন"></label></div>').join("");
  return '<article class="online-card"><div class="online-head"><div><b>'+safe(o.customerName||o.name||"কাস্টমার")+'</b><small>'+safe(o.phone||o.mobile||"")+' · '+new Date(number(o.createdAt)||Date.now()).toLocaleDateString("bn-BD")+'</small></div><span class="status-pill">'+safe(o.status||"Pending")+'</span></div><p class="online-address">ঠিকানা: '+safe(o.address||"উল্লেখ নেই")+'</p>'+itemHtml+'<div class="online-totals"><span>পণ্যের বিক্রি <b>'+money(sale)+'</b></span><span>পণ্যের কেনা <b>'+money(cost)+'</b></span><span>লাভ <b>'+(missing?"কেনা দাম বাকি":money(sale-cost))+'</b></span></div>'+(missing?'<small class="cost-hint">লাভের হিসাব সম্পূর্ণ করতে প্রতিটি পণ্যের কেনা দাম লিখে সেভ করুন।</small>':'')+'</article>';
  }).join("");
 }
@@ -51,7 +51,7 @@ function handleRecordAction(e){const edit=e.target.closest("[data-edit]"),del=e.
 $("cancelEdit").onclick=resetForm;["saleAmount","costAmount"].forEach(id=>$(id).addEventListener("input",updatePreview));$("searchInput").addEventListener("input",render);$("filterDate").addEventListener("change",render);$("clearFilter").onclick=()=>{$("searchInput").value="";$("filterDate").value="";render()};
 $("clearAll").onclick=()=>{if(records.length&&confirm("শুধু এই ডিভাইসের ম্যানুয়াল হিসাব মুছে ফেলবেন? ওয়েবসাইটের অর্ডার মুছবে না.")){records=[];saveRecords();render();resetForm();showToast("ম্যানুয়াল হিসাব মুছে ফেলা হয়েছে")}};
 $("exportBtn").onclick=()=>{const rows=[["Customer Name","Mobile Number","Product","Address","Sale Amount","Product Cost","Profit","Date","Note"],...records.map(r=>[r.name,r.phone,r.product||"",r.address||"",r.sale,r.cost,number(r.sale)-number(r.cost),r.date,r.note||""])];const csv="\uFEFF"+rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="mr-sales-records-"+today()+".csv";a.click();URL.revokeObjectURL(url);showToast("CSV ফাইল তৈরি হয়েছে")};
-$("onlineOrders").addEventListener("change",async e=>{const input=e.target.closest("[data-cost-key]");if(!input)return;const key=input.dataset.costKey,val=Number(input.value);if(!key||!Number.isFinite(val)||val<0){showToast("সঠিক কেনা দাম লিখুন");return}productCosts[key]=val;try{await firebase.database().ref("settings/salesManagerProductCosts").set(productCosts);showToast("পণ্যের কেনা দাম সেভ হয়েছে");render()}catch(err){showToast("সেভ হয়নি: "+err.message)}});
+$("onlineOrders").addEventListener("change",async e=>{const input=e.target.closest("[data-order-cost]");if(!input)return;const orderId=input.dataset.orderId,index=Number(input.dataset.itemIndex),raw=String(input.value||"").trim();if(!orderId||!Number.isInteger(index)||index<0)return;if(raw===""){showToast("কেনা দাম ফাঁকা রাখা যাবে না");return}const val=Number(raw);if(!Number.isFinite(val)||val<0){showToast("সঠিক কেনা দাম লিখুন");return}input.disabled=true;try{await firebase.database().ref("orders/"+orderId+"/items/"+index+"/purchaseCost").set(val);showToast("কেনা দাম সেভ হয়েছে");}catch(err){showToast("সেভ হয়নি: "+err.message)}finally{input.disabled=false}});
 function setupFirebase(){
  const config={apiKey:"AIzaSyD7ThTpHXOltyqDng_aTwXn3t35vxcR5VM",authDomain:"jsf-fashion.firebaseapp.com",databaseURL:"https://jsf-fashion-default-rtdb.firebaseio.com",projectId:"jsf-fashion",storageBucket:"jsf-fashion.firebasestorage.app",messagingSenderId:"545355825847",appId:"1:545355825847:web:49f701a22e68daa9298332"};
  if(!window.firebase){$("syncStatus").textContent="Firebase SDK লোড হয়নি";return}
@@ -60,12 +60,12 @@ function setupFirebase(){
  $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="লগইন হচ্ছে...";try{await auth.signInWithEmailAndPassword($("loginEmail").value.trim(),$("loginPassword").value)}catch(err){$("loginMessage").textContent="লগইন হয়নি: "+err.message}});
  $("logoutBtn").onclick=()=>auth.signOut();
  auth.onAuthStateChanged(async user=>{
-  if(ordersRef){ordersRef.off();ordersRef=null}if(costsRef){costsRef.off();costsRef=null}
-  if(!user){$("loginPanel").hidden=false;$("logoutBtn").hidden=true;$("syncStatus").textContent="ওয়েবসাইটের অর্ডার দেখতে অ্যাডমিন লগইন করুন";onlineOrders={};productCosts={};render();return}
+  if(ordersRef){ordersRef.off();ordersRef=null}
+  if(!user){$("loginPanel").hidden=false;$("logoutBtn").hidden=true;$("syncStatus").textContent="ওয়েবসাইটের অর্ডার দেখতে অ্যাডমিন লগইন করুন";onlineOrders={};render();return}
   if(!ADMIN_UIDS.includes(user.uid)){await auth.signOut();$("loginMessage").textContent="এই অ্যাকাউন্টটি JSF FASHION অ্যাডমিন অ্যাকাউন্ট নয়।";return}
   $("loginPanel").hidden=true;$("logoutBtn").hidden=false;$("syncStatus").textContent="JSF FASHION-এর সঙ্গে সংযুক্ত · লাইভ অর্ডার চালু";
   ordersRef=db.ref("orders");ordersRef.on("value",snap=>{onlineOrders=snap.val()||{};render()},err=>{$("syncStatus").textContent="অর্ডার লোড হয়নি: "+err.message});
-  costsRef=db.ref("settings/salesManagerProductCosts");costsRef.on("value",snap=>{productCosts=snap.val()||{};render()},err=>{$("syncStatus").textContent="কেনা দাম লোড হয়নি: "+err.message});
+
  });
 }
 $("saleDate").value=today();updatePreview();render();
