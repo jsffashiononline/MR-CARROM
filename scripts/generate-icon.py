@@ -42,6 +42,14 @@ folder = root / "drawable-nodpi"
 folder.mkdir(parents=True, exist_ok=True)
 fg.save(folder / "jsf_launcher_foreground.png")
 
+# Capacitor also supplies mipmap/ic_launcher_foreground.png (the blue default mark).
+# Android launchers may resolve that mipmap foreground from the adaptive icon.
+# Replace it at every density with the same JSF artwork, not the Capacitor placeholder.
+for name, size in [("mdpi",108),("hdpi",162),("xhdpi",216),("xxhdpi",324),("xxxhdpi",432)]:
+    folder = root / f"mipmap-{name}"
+    folder.mkdir(parents=True, exist_ok=True)
+    fg.resize((size, size), Image.Resampling.LANCZOS).save(folder / "ic_launcher_foreground.png")
+
 folder = root / "mipmap-anydpi-v26"
 folder.mkdir(parents=True, exist_ok=True)
 (folder / "ic_launcher.xml").write_text('''<?xml version="1.0" encoding="utf-8"?>
