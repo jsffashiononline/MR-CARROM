@@ -55,3 +55,10 @@ folder.mkdir(parents=True, exist_ok=True)
 (folder / "ic_launcher_background.xml").write_text('''<?xml version="1.0" encoding="utf-8"?>
 <resources><color name="ic_launcher_background">#080F20</color></resources>
 ''')
+
+
+# PWA / Add-to-Home-Screen icons
+web_icons = Path("www/icons")
+web_icons.mkdir(parents=True, exist_ok=True)
+im.resize((192, 192), Image.Resampling.LANCZOS).save(web_icons / "icon-192.png")
+im.resize((512, 512), Image.Resampling.LANCZOS).save(web_icons / "icon-512.png")
